@@ -1,0 +1,25 @@
+resources:
+- name: st-git
+  type: git
+  source:
+    uri: https://github.com/laurensmiers/st.git
+    branch: master
+
+- name: st-builder-image
+  type: docker-image
+  source:
+    email: ((docker-hub-email))
+    username: ((docker-hub-username))
+    password: ((docker-hub-password))
+    repository: ((docker-hub-username))/st-builder
+
+jobs:
+- name: publish
+  public: true
+  serial: true
+  plan:
+  - get: st-git
+    trigger: true
+  - put: st-builder-image
+    params:
+      build: st-git
